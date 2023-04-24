@@ -7,7 +7,9 @@ public final class com/chuckerteam/chucker/api/Chucker {
 	public static final field INSTANCE Lcom/chuckerteam/chucker/api/Chucker;
 	public static final fun dismissNotifications (Landroid/content/Context;)V
 	public static final fun getLaunchIntent (Landroid/content/Context;)Landroid/content/Intent;
+	public final fun isEnabled ()Z
 	public final fun isOp ()Z
+	public final fun setEnabled (Z)V
 }
 
 public final class com/chuckerteam/chucker/api/ChuckerCollector {

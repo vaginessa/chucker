@@ -9,8 +9,8 @@ updates:
       schedule:
         interval: "weekly"
       reviewers:
-      - "cortinico"
-      - "vbuberen"
+      - "kmayoral"
+      - "amagh"
 # Updates for Gradle dependencies used in the app
     - package-ecosystem: gradle
       directory: "/"
@@ -18,5 +18,5 @@ updates:
         interval: "weekly"
       open-pull-requests-limit: 10
       reviewers:
-      - "cortinico"
-      - "vbuberen"
+      - "kmayoral"
+      - "amagh"

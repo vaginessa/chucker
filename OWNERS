@@ -1,0 +1,21 @@
+reviewers:
+- kmayoral
+- amagh
+- roxrook
+- ninjudd
+- jfieldmanbird
+- shackley
+- cpoole
+- pkapur-hmc
+
+approvers:
+- kmayoral
+- amagh
+- ninjudd
+- jfieldmanbird
+- shackley
+- cpoole
+- pkapur-hmc
+
+labels:
+- android

@@ -12,6 +12,14 @@ public object Chucker {
     @Suppress("MayBeConst ") // https://github.com/ChuckerTeam/chucker/pull/169#discussion_r362341353
     public val isOp: Boolean = false
 
+
+    @Suppress("MayBeConst")
+    public val isEnabled: Boolean = false
+
+    public fun setEnabled(enabled: Boolean) {
+        // No-op
+    }
+
     @JvmStatic
     public fun getLaunchIntent(context: Context): Intent = Intent()
 
