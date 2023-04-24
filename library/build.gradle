@@ -57,12 +57,12 @@ android {
 
     resourcePrefix 'chucker_'
 
-    publishing {
-        singleVariant('release') {
-            withSourcesJar()
-            withJavadocJar()
-        }
-    }
+//    publishing {
+//        singleVariant('release') {
+//            withSourcesJar()
+//            withJavadocJar()
+//        }
+//    }
 }
 
 dependencies {
@@ -121,14 +121,14 @@ project.afterEvaluate {
                 // You can customize attributes of the publication here or in module's build.gradle file (if you save this as script and include it build.gradle file, then you can just replicate this whole block there only with changed fields).
                 groupId = GROUP
                 artifactId = ARTIFACT_ID
-                version = VERSION_NAME
+//                version = VERSION_NAME
             }
         }
         repositories {
             maven {
                 url = uri('https://artifactory.svc.bird.co/artifactory/internal')
                 credentials {
-                    username = System.getenv('ARTIFACTORY_API_USER')
+                    username = System.getenv('ARTIFACTORY_USER')
                     password = System.getenv('ARTIFACTORY_API_KEY')
                 }
             }
