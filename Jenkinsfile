@@ -1,4 +1,4 @@
-maven_push.gradle#!groovy
+#!groovy
 import groovy.transform.Field
 
 @Field apkStashName
