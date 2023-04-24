@@ -2,7 +2,7 @@ FROM runmymind/docker-android-sdk:ubuntu-standalone
 
 ENV JAVA_OPTS "-Xmx4g -Xms4g -Dfile.encoding=UTF-8"
 
-RUN apt install gnupg ca-certificates curl
+RUN apt-get install gnupg ca-certificates curl
 RUN curl -s https://repos.azul.com/azul-repo.key | sudo gpg --dearmor -o /usr/share/keyrings/azul.gpg
 RUN echo "deb [signed-by=/usr/share/keyrings/azul.gpg] https://repos.azul.com/zulu/deb stable main" | sudo tee /etc/apt/sources.list.d/zulu.list
 
