@@ -27,6 +27,21 @@ public object Chucker {
     @Suppress("MayBeConst ") // https://github.com/ChuckerTeam/chucker/pull/169#discussion_r362341353
     public val isOp: Boolean = true
 
+    private var _isEnabled: Boolean = true
+
+    /**
+     * Check if this instance is currently enabled to intercept network calls.
+     */
+    @Suppress("MayBeConst ")
+    public val isEnabled: Boolean get() = _isEnabled
+
+    /**
+     * Set whether or not we want to be intercepting network calls currently.
+     */
+    public fun setEnabled(enabled: Boolean) {
+        _isEnabled = enabled
+    }
+
     /**
      * Get an Intent to launch the Chucker UI directly.
      * @param context An Android [Context].

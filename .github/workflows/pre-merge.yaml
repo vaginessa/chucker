@@ -1,10 +1,10 @@
 name: Pre Merge Checks
-on: 
+on:
   push:
     branches:
       - develop
   pull_request:
-    branches: 
+    branches:
       - '*'
   workflow_dispatch:
     branches:

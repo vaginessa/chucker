@@ -71,7 +71,7 @@ public class ChuckerInterceptor private constructor(
     override fun intercept(chain: Interceptor.Chain): Response {
         val transaction = HttpTransaction()
         val request = chain.request()
-        val shouldProcessTheRequest = !skipPaths.any { it == request.url.encodedPath }
+        val shouldProcessTheRequest = Chucker.isEnabled && !skipPaths.any { it == request.url.encodedPath }
         if (shouldProcessTheRequest) {
             requestProcessor.process(request, transaction)
         }

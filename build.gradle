@@ -48,8 +48,9 @@ buildscript {
     }
 
     repositories {
-        google()
-        gradlePluginPortal()
+        maven { url = uri 'https://artifactory.svc.bird.co/artifactory/bird' }
+//        google()
+//        gradlePluginPortal()
     }
 
     dependencies {
@@ -64,6 +65,12 @@ buildscript {
         classpath "io.codearte.gradle.nexus:gradle-nexus-staging-plugin:$nexusStagingPlugin"
     }
 }
+
+plugins {
+    id 'co.bird.gradle.version' version '2.3.2'
+    id 'com.jfrog.artifactory' version '4.21.0'
+}
+
 apply plugin: 'binary-compatibility-validator'
 apply plugin: 'io.codearte.nexus-staging'
 
@@ -80,8 +87,9 @@ allprojects {
     group = GROUP
 
     repositories {
-        google()
-        mavenCentral()
+        maven { url = uri 'https://artifactory.svc.bird.co/artifactory/bird' }
+//        google()
+//        mavenCentral()
     }
 
     tasks.withType(Test) {
