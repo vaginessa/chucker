@@ -20,7 +20,7 @@ public class SpanUtilTest {
         context = InstrumentationRegistry.getInstrumentation().context
     }
 
-@SuppressLint("CheckResult")
+    @SuppressLint("CheckResult ")
     @Test
     public fun json_can_have_null_value() {
         val parsedJson = SpanTextUtil(context).simpleSpanJson(

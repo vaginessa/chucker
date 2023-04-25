@@ -88,7 +88,7 @@ public class SpanTextUtil(context: Context) {
                     sb.setColor(
                         start = tokenIndex,
                         end = tokenIndex,
-                        color = jsonSignElementsColor,
+                        color = jsonSignElementsColor
                     )
                     index = tokenIndex + 1
                 }
@@ -223,7 +223,7 @@ public class SpanTextUtil(context: Context) {
             ChuckerForegroundColorSpan(color),
             start,
             end,
-            Spanned.SPAN_INCLUSIVE_INCLUSIVE,
+            Spanned.SPAN_INCLUSIVE_INCLUSIVE
         )
         return this
     }
