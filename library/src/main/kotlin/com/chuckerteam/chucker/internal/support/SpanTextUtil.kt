@@ -25,6 +25,98 @@ public class SpanTextUtil(context: Context) {
         jsonSignElementsColor = ContextCompat.getColor(context, R.color.chucker_json_elements_color)
     }
 
+    private enum class TokenType {
+        STRING,
+        ARRAY,
+        OBJECT,
+        KEY_SEPARATOR,
+        VALUE_SEPARATOR,
+        NONE
+    }
+
+    private inline fun CharSequence.indexOfNextToken(startIndex: Int = 0, predicate: (Char) -> TokenType): Pair<Int, TokenType> {
+        for (index in startIndex until length) {
+            predicate(this[index])?.let {
+                return index to it
+            }
+        }
+        return -1 to TokenType.NONE
+    }
+
+    private inline fun CharSequence.indexOfNextUnescapedQuote(startIndex: Int = 0): Int {
+        var index = indexOf('"', startIndex)
+        while (index < length) {
+            if (this[index] == '"' && (index == 0 || this[index - 1] != '\\')) {
+                return index
+            }
+            index = indexOf('"', index + 1)
+        }
+        return -1
+    }
+    public fun simpleSpanJson(input: CharSequence): SpannableStringBuilder {
+        // first handle pretty printing via gson
+        val prettyPrintedInput = FormatUtils.formatJson(input.toString())
+        val arrayTokens = listOf('[', ']')
+        val objectTokens = listOf('{', '}')
+        val keySeparatorTokens = listOf(':')
+        val valueSeparatorTokens = listOf(',')
+        val stringTokens = listOf('"')
+
+        var lastTokenType: TokenType? = null
+        var index = 0
+
+        val sb = SpannableStringBuilder(prettyPrintedInput)
+        while (index < prettyPrintedInput.length) {
+            val (tokenIndex, tokenType) = prettyPrintedInput.indexOfNextToken(startIndex = index) { char ->
+                when (char) {
+                    in arrayTokens -> TokenType.ARRAY
+                    in objectTokens -> TokenType.OBJECT
+                    in keySeparatorTokens -> TokenType.KEY_SEPARATOR
+                    in valueSeparatorTokens -> TokenType.VALUE_SEPARATOR
+                    in stringTokens -> TokenType.STRING
+                    else -> TokenType.NONE
+                }
+            }
+            when (tokenType) {
+                TokenType.ARRAY,
+                TokenType.OBJECT,
+                TokenType.KEY_SEPARATOR,
+                TokenType.VALUE_SEPARATOR -> {
+                    sb.setColor(
+                        start = tokenIndex,
+                        end = tokenIndex,
+                        color = jsonSignElementsColor,
+                    )
+                    index = tokenIndex + 1
+                }
+                TokenType.STRING -> {
+                    val color = when (lastTokenType) {
+                        TokenType.ARRAY,
+                        TokenType.OBJECT,
+                        TokenType.VALUE_SEPARATOR,
+                        TokenType.NONE,
+                        null -> {
+                            jsonKeyColor
+                        }
+                        else -> {
+                            jsonValueColor
+                        }
+                    }
+                    val endIndex = prettyPrintedInput.indexOfNextUnescapedQuote(tokenIndex + 1)
+                    // if we somehow get an incomplete string, we lose the ability to parse any other tokens, so just return now
+                    if (endIndex < tokenIndex) {
+                        return sb
+                    }
+                    sb.setColor(start = tokenIndex, end = endIndex, color)
+                    index = endIndex + 1
+                }
+                TokenType.NONE -> return sb
+            }
+            lastTokenType = tokenType
+        }
+        return sb
+    }
+
     public fun spanJson(input: CharSequence): SpannableStringBuilder {
         val jsonElement = try {
             JsonParser.parseString(input.toString())
@@ -118,6 +210,16 @@ public class SpanTextUtil(context: Context) {
             text,
             ChuckerForegroundColorSpan(color),
             Spanned.SPAN_INCLUSIVE_INCLUSIVE
+        )
+        return this
+    }
+
+    private fun SpannableStringBuilder.setColor(start: Int, end: Int, color: Int): SpannableStringBuilder {
+        this.setSpan(
+            ChuckerForegroundColorSpan(color),
+            start,
+            end,
+            Spanned.SPAN_INCLUSIVE_INCLUSIVE,
         )
         return this
     }
