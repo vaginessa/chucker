@@ -32,7 +32,7 @@ timestamps {
         docker.withRegistry('https://168995956934.dkr.ecr.us-west-2.amazonaws.com', 'ecr:us-west-2:ecs-credentials') {
           docker.build('local/android').inside('-v /root/.gradle:/root/.gradle -v /root/.android:/root/.android') {
             sh "./gradlew clean build"
-            if (scmVars.GIT_BRANCH == "master") {
+            if (scmVars.GIT_BRANCH == "develop") {
               def secrets = [
                 [$class: 'VaultSecret', path: "secret/services/jenkins/artifactory", secretValues: [
                   [$class: 'VaultSecretValue', envVar: 'ARTIFACTORY_USER', vaultKey: 'USER'],
