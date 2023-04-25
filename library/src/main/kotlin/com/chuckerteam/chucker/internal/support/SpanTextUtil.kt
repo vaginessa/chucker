@@ -25,23 +25,33 @@ public class SpanTextUtil(context: Context) {
         jsonSignElementsColor = ContextCompat.getColor(context, R.color.chucker_json_elements_color)
     }
 
-    private enum class TokenType {
-        STRING,
-        ARRAY,
-        OBJECT,
-        KEY_SEPARATOR,
-        VALUE_SEPARATOR,
-        NONE
+    private enum class TokenType(val delimiters: Set<Char>) {
+        STRING(setOf('"')),
+        ARRAY(setOf('[', ']')),
+        OBJECT(setOf('{', '}')),
+        KEY_SEPARATOR(setOf(':')),
+        VALUE_SEPARATOR(setOf(',')),
+        NONE(setOf());
+
+        companion object {
+            val allPossibleTokens = values().map { it.delimiters }.flatten().toSet().toTypedArray().toCharArray()
+        }
     }
 
     private inline fun CharSequence.indexOfNextToken(
-        startIndex: Int = 0,
-        predicate: (Char) -> TokenType
+        startIndex: Int = 0
     ): Pair<Int, TokenType> {
-        for (index in startIndex until length) {
-            predicate(this[index])?.let {
-                return index to it
-            }
+        var index = indexOfAny(TokenType.allPossibleTokens, startIndex)
+        val tokenType = when (this[index]) {
+            in TokenType.ARRAY.delimiters -> TokenType.ARRAY
+            in TokenType.OBJECT.delimiters -> TokenType.OBJECT
+            in TokenType.KEY_SEPARATOR.delimiters -> TokenType.KEY_SEPARATOR
+            in TokenType.VALUE_SEPARATOR.delimiters -> TokenType.VALUE_SEPARATOR
+            in TokenType.STRING.delimiters -> TokenType.STRING
+            else -> null
+        }
+        tokenType?.let {
+            return index to it
         }
         return -1 to TokenType.NONE
     }
@@ -59,27 +69,13 @@ public class SpanTextUtil(context: Context) {
     public fun simpleSpanJson(input: CharSequence): SpannableStringBuilder {
         // first handle pretty printing via gson
         val prettyPrintedInput = FormatUtils.formatJson(input.toString())
-        val arrayTokens = listOf('[', ']')
-        val objectTokens = listOf('{', '}')
-        val keySeparatorTokens = listOf(':')
-        val valueSeparatorTokens = listOf(',')
-        val stringTokens = listOf('"')
 
         var lastTokenType: TokenType? = null
         var index = 0
 
         val sb = SpannableStringBuilder(prettyPrintedInput)
         while (index < prettyPrintedInput.length) {
-            val (tokenIndex, tokenType) = prettyPrintedInput.indexOfNextToken(startIndex = index) { char ->
-                when (char) {
-                    in arrayTokens -> TokenType.ARRAY
-                    in objectTokens -> TokenType.OBJECT
-                    in keySeparatorTokens -> TokenType.KEY_SEPARATOR
-                    in valueSeparatorTokens -> TokenType.VALUE_SEPARATOR
-                    in stringTokens -> TokenType.STRING
-                    else -> TokenType.NONE
-                }
-            }
+            val (tokenIndex, tokenType) = prettyPrintedInput.indexOfNextToken(startIndex = index)
             when (tokenType) {
                 TokenType.ARRAY,
                 TokenType.OBJECT,
