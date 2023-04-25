@@ -34,7 +34,10 @@ public class SpanTextUtil(context: Context) {
         NONE
     }
 
-    private inline fun CharSequence.indexOfNextToken(startIndex: Int = 0, predicate: (Char) -> TokenType): Pair<Int, TokenType> {
+    private inline fun CharSequence.indexOfNextToken(
+        startIndex: Int = 0,
+        predicate: (Char) -> TokenType
+    ): Pair<Int, TokenType> {
         for (index in startIndex until length) {
             predicate(this[index])?.let {
                 return index to it
@@ -103,7 +106,8 @@ public class SpanTextUtil(context: Context) {
                         }
                     }
                     val endIndex = prettyPrintedInput.indexOfNextUnescapedQuote(tokenIndex + 1)
-                    // if we somehow get an incomplete string, we lose the ability to parse any other tokens, so just return now
+                    // if we somehow get an incomplete string, we lose the ability to parse any other
+                    // tokens, so just return now
                     if (endIndex < tokenIndex) {
                         return sb
                     }
